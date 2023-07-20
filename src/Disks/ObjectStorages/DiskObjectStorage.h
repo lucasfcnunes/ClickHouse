@@ -212,6 +212,8 @@ private:
     /// execution.
     DiskTransactionPtr createObjectStorageTransaction();
 
+    void applyNewSettingsImpl(const Poco::Util::AbstractConfiguration & config, const String & config_prefix);
+
     const String object_storage_root_path;
     Poco::Logger * log;
 
@@ -225,6 +227,7 @@ private:
     bool tryReserve(UInt64 bytes);
 
     const bool send_metadata;
+    std::atomic<bool> enable_page_cache {false};
 
     std::unique_ptr<DiskObjectStorageRemoteMetadataRestoreHelper> metadata_helper;
 };

@@ -120,6 +120,8 @@ void AsynchronousBoundedReadBuffer::setReadUntilPosition(size_t position)
             if (working_buffer.size() >= file_offset_of_buffer_end - position)
             {
                 /// new read until position is inside working buffer
+                working_buffer = Buffer(working_buffer.begin(), working_buffer.end() - (file_offset_of_buffer_end - position));
+                pos = std::min(pos, working_buffer.end());
                 file_offset_of_buffer_end = position;
             }
             else
@@ -224,13 +226,10 @@ bool AsynchronousBoundedReadBuffer::nextImpl()
         pos = working_buffer.begin();
     }
 
-    file_offset_of_buffer_end = impl->getFileOffsetOfBufferEnd();
+    file_offset_of_buffer_end += available();
 
-    /// In case of multiple files for the same file in clickhouse (i.e. log family)
-    /// file_offset_of_buffer_end will not match getImplementationBufferOffset()
-    /// so we use [impl->getImplementationBufferOffset(), impl->getFileSize()]
-    chassert(file_offset_of_buffer_end >= impl->getFileOffsetOfBufferEnd());
-    chassert(file_offset_of_buffer_end <= impl->getFileSize());
+    /// `impl` internally may have read more than we asked for.
+    chassert(file_offset_of_buffer_end <= impl->getFileOffsetOfBufferEnd());
 
     return bytes_read;
 }

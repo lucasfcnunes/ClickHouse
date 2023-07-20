@@ -54,6 +54,9 @@ public:
 
     struct Result
     {
+        /// The read data is at [data + offset, data + size), where `data` is the pointer
+        /// passed to the readInto() call. (Notice that `offset` is included in `size`.)
+
         /// size
         /// Less than requested amount of data can be returned.
         /// If size is zero - the file has ended.
