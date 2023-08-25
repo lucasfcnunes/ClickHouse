@@ -9,7 +9,7 @@ namespace DB
 class CachedInMemoryReadBufferFromFile : public ReadBufferFromFileBase
 {
 public:
-    /// `in_` must spport readInto().
+    /// `in_` must support readInto().
     CachedInMemoryReadBufferFromFile(FileChunkAddress cache_key_, PageCachePtr cache_, std::unique_ptr<ReadBufferFromFileBase> in_, const ReadSettings & settings_);
 
     String getFileName() const override;

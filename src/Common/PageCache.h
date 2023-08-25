@@ -152,7 +152,7 @@ private:
 
     /// Normally pin_count == 0  <=>  state == PageChunkState::Limbo,
     ///          pin_count >  0  <=>  state == PageChunkState::Stable.
-    /// This separate field is needed because of sychronization: pin_count is changed with global_mutex locked,
+    /// This separate field is needed because of synchronization: pin_count is changed with global_mutex locked,
     /// this field is changed with chunk_mutex locked, and we never have to lock both mutexes at once.
     PageChunkState pages_state = PageChunkState::Stable;
 };

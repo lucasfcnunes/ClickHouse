@@ -316,7 +316,9 @@ PinnedPageChunk PageCache::getOrSet(PageCacheKey key, bool detached_if_missing, 
                         for (size_t i = 0; i < 20; ++i)
                             chunk->pages_populated.unset(rng() % (chunk->size / chunk->page_size));
                 }
-            } else {
+            }
+            else
+            {
                 ProfileEvents::increment(ProfileEvents::PageCacheChunkShared);
                 incremented_profile_events = true;
             }
@@ -499,12 +501,12 @@ void PageCache::evictChunk(PageChunk * chunk, std::unique_lock<std::mutex> & /* 
     /// This is tricky. We're not holding the chunk_mutex, so another thread might be running
     /// sendChunkToLimbo() or even restoreChunkFromLimbo() on this chunk right now.
     ///
-    /// Nevertheless, it's correct and sufficient to clear pages_populated here becase sendChunkToLimbo()
+    /// Nevertheless, it's correct and sufficient to clear pages_populated here because sendChunkToLimbo()
     /// and restoreChunkFromLimbo() only touch pages_populated (only unsetting the bits),
     /// first_bit_of_each_page, and the data; and we don't care about first_bit_of_each_page and the data.
     ///
     /// This is precarious, but I don't have better ideas. Note that this clearing (or something else)
-    /// must be done before unlocking the global_mutex becase otherwise another call to getOrSet() might
+    /// must be done before unlocking the global_mutex because otherwise another call to getOrSet() might
     /// return this chunk before we clear it.
     chunk->pages_populated.unsetAll();
 }
