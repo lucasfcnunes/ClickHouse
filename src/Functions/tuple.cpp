@@ -4,6 +4,11 @@
 namespace DB
 {
 
+namespace ErrorCodes
+{
+    extern const int NUMBER_OF_ARGUMENTS_DOESNT_MATCH;
+}
+
 DataTypePtr FunctionTuple::getReturnTypeImpl(const DataTypes & arguments) const
 {
     if (arguments.empty())
@@ -25,6 +30,11 @@ ColumnPtr FunctionTuple::executeImpl(const ColumnsWithTypeAndName & arguments, c
         tuple_columns[i] = arguments[i].column->convertToFullColumnIfConst();
     }
     return ColumnTuple::create(tuple_columns);
+}
+
+FunctionPtr FunctionTuple::create(ContextPtr)
+{
+    return std::make_shared<FunctionTuple>();
 }
 
 
